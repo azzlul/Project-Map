@@ -5,18 +5,18 @@ import Exceptions.ValidatorException;
 /**
  * Validator for friendships.
  */
-public class ValidatorFriendship {
+public class ValidatorFriendship extends ValidatorInt<Friendship> {
     /**
      * Constructor for class.
      */
-    public ValidatorFriendship() {}
+    public ValidatorFriendship(){}
     /**
      * Verifies if a friendship is valid.
      * A friendship is valid if its user IDs are greater than 0.
      * @throws ValidatorException if the friendship is not valid.
      * @param friendship Friendship
      */
-    public static void validate(Friendship friendship) {
+    public void validate(Friendship friendship) {
         String errors = null;
         if(friendship.getFirstUserID() <= 0) errors += "First user ID invalid!";
         if(friendship.getSecondUserID() <= 0) errors += "Second user ID invalid!";

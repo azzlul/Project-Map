@@ -2,9 +2,10 @@ package Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import Exceptions.RepositoryException;
-
+import Validator.*;
 /**
  * Repository where the information is stored in RAM.
  * @param <ID> ID type of Entity
@@ -15,6 +16,10 @@ public abstract class AbstractInMemoryRepo<ID, Entity extends Domain.Entity<ID>>
      * List of all entities in repository.
      */
     Map<ID, Entity> entities;
+    /**
+     * Validator for stored entities
+     */
+    Validator<ID, Entity> validator;
     /**
      * Constructor for class.
      */
@@ -28,27 +33,9 @@ public abstract class AbstractInMemoryRepo<ID, Entity extends Domain.Entity<ID>>
      */
     protected abstract ID generateID();
     @Override
-    public void add(Entity entity) {
-        entity.setId(generateID());
-        entities.put(entity.getId(), entity);
-    }
-
-    @Override
-    public void update(Entity entity) {
-        if(!entities.containsKey(entity.getId())) throw new RepositoryException("Entity does not exist");
-        entities.put(entity.getId(), entity);
-    }
-
-    @Override
-    public void remove(ID id) {
-        if(!entities.containsKey(id)) throw new RepositoryException("Entity does not exist");
-        entities.remove(id);
-    }
-
-    @Override
-    public Entity find(ID id) {
-        if(!entities.containsKey(id)) throw new RepositoryException("Entity does not exist");
-        return entities.get(id);
+    public Optional<Entity> findOne(ID id) {
+        validator.validateID(id);
+        return Optional.ofNullable(entities.get(id));
     }
 
     @Override
@@ -56,16 +43,29 @@ public abstract class AbstractInMemoryRepo<ID, Entity extends Domain.Entity<ID>>
         return entities.values();
     }
 
-    /**
-     * Generates an ID for an integer-based ID.
-     * @return new ID
-     */
-    protected int generateIDInt(){
-        int lastIntID = 0;
-        for(var x: findAll()){
-            lastIntID = Math.max(lastIntID, (int)x.getId());
-        }
-        return lastIntID+1;
+    @Override
+    public Optional<Entity> save(Entity entity) {
+        validator.validateNull(entity);
+        validator.validate(entity);
+        entity.setId(generateID());
+        var result = entities.put(entity.getId(), entity);
+        if(result == null) return Optional.of(entity);
+        else return Optional.empty();
+    }
+
+    @Override
+    public Optional<Entity> delete(ID id) {
+        validator.validateID(id);
+        return Optional.ofNullable(entities.remove(id));
+    }
+
+    @Override
+    public Optional<Entity> update(Entity entity) {
+        validator.validateNull(entity);
+        validator.validate(entity);
+        var result = entities.put(entity.getId(), entity);
+        if (result == null) return Optional.of(entity);
+        return Optional.empty();
     }
 
     @Override

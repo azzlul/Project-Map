@@ -1,5 +1,6 @@
 package Repository;
 import Domain.User;
+import Validator.ValidatorUser;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -7,13 +8,14 @@ import java.util.Random;
 /**
  * File repository for users.
  */
-public class UserFileRepo extends AbstractFileRepo<Integer, User>{
+public class UserFileRepo extends AbstractFileRepoIntID<User>{
     /**
      * Constructor for class.
      * @param file_path path to file
      */
     public UserFileRepo(String file_path) {
         super(file_path);
+        validator = new ValidatorUser();
     }
 
     @Override
@@ -35,10 +37,5 @@ public class UserFileRepo extends AbstractFileRepo<Integer, User>{
     @Override
     public String writeEntity(User entity) {
         return entity.getId() + ";" + entity.getName() + ";" + entity.getFriendsID();
-    }
-
-    @Override
-    protected Integer generateID() {
-       return generateIDInt();
     }
 }

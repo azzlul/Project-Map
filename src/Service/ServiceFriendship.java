@@ -1,10 +1,9 @@
 package Service;
 import Exceptions.ServiceException;
-import Exceptions.ValidatorException;
 import Repository.*;
 import Domain.Friendship;
-import Validator.ValidatorFriendship;
-import Validator.Validator;
+
+import java.util.function.Predicate;
 
 /**
  * Class that handles operations on a friendship repository.
@@ -25,45 +24,50 @@ public class ServiceFriendship {
 
     /**
      * Creates, validates and adds a friendship to repository.
+     * @throws ServiceException if friendship could not be added.
      * @param firstUserID ID of first User
      * @param secondUserID ID of second User
      */
     public void add(int firstUserID, int secondUserID) {
         Friendship friendship = new Friendship(firstUserID, secondUserID);
-        ValidatorFriendship.validate(friendship);
-        repo.add(friendship);
+        var result = repo.save(friendship);
+        if(result.isEmpty()) throw new ServiceException("Friendship could be added");
     }
 
     /**
      * Creates, validates and updates a friendship from repository.
+     * @throws ServiceException if friendship could not be updated
      * @param friendshipID ID of friendship
      * @param firstUserID ID of first user
      * @param secondUserID ID of second user
      */
     public void update(int friendshipID, int firstUserID, int secondUserID) {
         Friendship friendship = new Friendship(firstUserID, secondUserID);
-        ValidatorFriendship.validate(friendship);
         friendship.setId(friendshipID);
-        repo.update(friendship);
+        var result = repo.update(friendship);
+        if(result.isEmpty()) throw new ServiceException("Friendship could be updated");
     }
 
     /**
      * Removes friendship from repository.
+     * @throws ServiceException if friendship could not be removed
      * @param friendshipID ID of friendship
      */
     public void remove(int friendshipID) {
-        Validator.validateIntID(friendshipID);
-        repo.remove(friendshipID);
+        var result = repo.delete(friendshipID);
+        if(result.isEmpty()) throw new ServiceException("Friendship could be removed");
     }
 
     /**
      * Returns friendship from repository.
+     * @throws ServiceException if friendship could not be found
      * @param friendshipID ID of friendship
      * @return friendship with the given ID
      */
     public Friendship find(int friendshipID) {
-        Validator.validateIntID(friendshipID);
-        return repo.find(friendshipID);
+        var result = repo.findOne(friendshipID);
+        if(result.isEmpty()) throw new ServiceException("Friendship could be not found");
+        return result.get();
     }
 
     /**
@@ -83,12 +87,10 @@ public class ServiceFriendship {
      */
     public Friendship findByUserID(int firstUserID, int secondUserID) {
         var it = findAll();
-        for(var friendship : it) {
-            if((friendship.getFirstUserID() == firstUserID && friendship.getSecondUserID() == secondUserID) ||
-                friendship.getFirstUserID() == secondUserID && friendship.getSecondUserID() == firstUserID) {
-                return friendship;
-            }
-        }
+        Predicate<Friendship> found = friendship ->
+                friendship.getFirstUserID() == firstUserID && friendship.getSecondUserID() == secondUserID ||
+                        friendship.getFirstUserID() == secondUserID && friendship.getSecondUserID() == firstUserID;
+        for(var friendship : it)  if(found.test(friendship)) return friendship;
         throw new ServiceException("Friendship not found!");
     }
 

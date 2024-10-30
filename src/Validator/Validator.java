@@ -5,18 +5,30 @@ import Exceptions.ValidatorException;
 /**
  * General purpose validator.
  */
-public class Validator {
+public abstract class Validator<ID, Entity> {
     /**
      * Constructor for class.
      */
     public Validator() {}
+
     /**
-     * Verifies if an integer ID is valid.
-     * An integer ID is valid if it's greater than 0.
-     * @throws ValidatorException if the ID is not valid.
-     * @param ID Integer ID
+     * Validates the entity given.
+     * @param entity Entity to be validated.
      */
-    public static void validateIntID(int ID){
-        if(ID <= 0) throw new ValidatorException("ID is invalid!");
+    public abstract void validate(Entity entity);
+    /**
+     *Verifies if an ID is valid
+     * @throws ValidatorException if the ID is not valid.
+     * @param ID ID
+     */
+    public abstract void validateID(ID ID);
+
+    /**
+     * Verifies if entity is null.
+     * @throws IllegalArgumentException if entity is null
+     * @param entity Entity
+     */
+    public void validateNull(Entity entity){
+        if(entity == null) throw new IllegalArgumentException("Entity cannot be null");
     }
 }

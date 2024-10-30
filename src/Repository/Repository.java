@@ -2,49 +2,60 @@ package Repository;
 import Domain.Entity;
 import Exceptions.RepositoryException;
 
+import java.util.Optional;
+import Exceptions.ValidatorException;
 /**
- * Interface class for a Repository.
- * @param <ID> ID type of Entity
- * @param <Entity> type of the stored entity
+ * CRUD operations repository interface
+ * @param <ID> - type E must have an attribute of type ID
+ * @param <E> - type of entities saved in repository
  */
-public interface Repository<ID, Entity extends Domain.Entity<ID>> {
+public interface Repository<ID, E extends Entity<ID>> {
     /**
-     * Adds a new entity to the repository.
-     * @param entity Entity to be added
+     * @param id -the id of the entity to be returned
+     *           id must not be null
+     * @return an {@code Optional} encapsulating the entity with the given id
+     * @throws IllegalArgumentException if id is null.
      */
-    public void add(Entity entity);
+    Optional<E> findOne(ID id);
 
     /**
-     * Updates an entity from the repository.
-     * @throws RepositoryException if the given user's ID is not found.
-     * @param entity updated Entity
+     * @return all entities
      */
-    public void update(Entity entity);
+    Iterable<E> findAll();
 
     /**
-     * Removes the entity with the given ID.
-     * @throws RepositoryException if the ID is not found.
-     * @param id ID of entity to be removed
+     * @param entity entity must be not null
+     * @return an {@code Optional} - null if the entity was saved,
+     * - the entity (id already exists)
+     * @throws ValidatorException       if the entity is not valid
+     * @throws IllegalArgumentException if the given entity is null. *
      */
-    public void remove(ID id);
+    Optional<E> save(E entity);
 
     /**
-     * Returns the user with the given ID.
-     * @throws RepositoryException of the ID is not found.
-     * @param id ID of entity to be returned
-     * @return Entity with the given ID
+     * removes the entity with the specified id
+     *
+     * @param id id must be not null
+     * @return an {@code Optional}
+     * - null if there is no entity with the given id,
+     * - the removed entity, otherwise
+     * @throws IllegalArgumentException if the given id is null.
      */
-    public Entity find(ID id);
+    Optional<E> delete(ID id);
 
     /**
-     * Returns all entities.
-     * @return iterable for the repository
+     * @param entity entity must not be null
+     * @return an {@code Optional}
+     * - null if the entity was updated
+     * - otherwise (e.g. id does not exist) returns the entity.
+     * @throws IllegalArgumentException if the given entity is null.
+     * @throws ValidatorException       if the entity is not valid.
      */
-    public Iterable<Entity> findAll();
+    Optional<E> update(E entity);
 
     /**
-     * Returns size of repository.
-     * @return integer
+     * Returns the size of repository
+     * @return Integer
      */
-    public int size();
+    int size();
 }

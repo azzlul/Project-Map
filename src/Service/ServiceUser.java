@@ -8,6 +8,7 @@ import Validator.Validator;
 import Validator.ValidatorUser;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 /**
  * Class that handles operations on a user repository.
@@ -34,12 +35,12 @@ public class ServiceUser {
 
     /**
      * Creates, validates and adds a user to the repository.
+     * @throws ServiceException if user couldn't be added
      * @param name username
      */
     public void addUser(String name){
         var user = new User(name);
-        ValidatorUser.validate(user);
-        repo.add(user);
+        repo.save(user);
     }
 
     /**
@@ -48,8 +49,11 @@ public class ServiceUser {
      * @param secondUserID ID of second user
      */
     public void addFriendship(int firstUserID, int secondUserID){
-        User firstUser = repo.find(firstUserID);
-        User secondUser = repo.find(secondUserID);
+        var rez1  = repo.findOne(firstUserID);
+        var rez2  = repo.findOne(secondUserID);
+        if(rez1.isEmpty() || rez2.isEmpty()) throw new ServiceException("Friendship could not be added");
+        User firstUser = rez1.get();
+        User secondUser = rez2.get();
         if(firstUser.getFriendsID().contains(secondUserID)) throw new ServiceException("Users are already friends");
         firstUser.getFriendsID().add(secondUserID);
         secondUser.getFriendsID().add(firstUserID);
@@ -60,12 +64,16 @@ public class ServiceUser {
 
     /**
      * Removes a friendship from the friendship repository, and updates the user's friends list accordingly.
+     * @throws ServiceException if friendship could not be removed.
      * @param friendshipID ID of the friendship
      */
     public void removeFriendship(int friendshipID){
         Friendship friendship = serviceFriendship.find(friendshipID);
-        User firstUser = repo.find(friendship.getFirstUserID());
-        User secondUser = repo.find(friendship.getSecondUserID());
+        var rez1 = repo.findOne(friendship.getFirstUserID());
+        var rez2 = repo.findOne(friendship.getSecondUserID());
+        if(rez1.isEmpty() || rez2.isEmpty()) throw new ServiceException("Friendship could not be removed");
+        User firstUser = rez1.get();
+        User secondUser = rez2.get();
         firstUser.getFriendsID().remove(secondUser.getId());
         secondUser.getFriendsID().remove(firstUser.getId());
         repo.update(firstUser);
@@ -75,25 +83,27 @@ public class ServiceUser {
 
     /**
      * Removes user from the repository and all friends list.
+     * @throws ServiceException if user couldn't be removed
      * @param userID ID of user
      */
     public void removeUser(int userID){
-        Validator.validateIntID(userID);
-        var user = repo.find(userID);
-        for(var friendID : user.getFriendsID()){
-            removeFriendship(serviceFriendship.findByUserID(user.getId(), friendID).getId());
-        }
-        repo.remove(userID);
+        var rez = repo.findOne(userID);
+        if(rez.isEmpty()) throw new ServiceException("User could not be removed");
+        User user = rez.get();
+        user.getFriendsID().forEach(u -> removeFriendship(serviceFriendship.findByUserID(user.getId(), u).getId()));
+        repo.delete(userID);
     }
 
     /**
      * Returns the user with the given ID.
+     * @throws ServiceException if user couldn't be found
      * @param userID ID of user
      * @return User with the given ID
      */
     public User findUser(int userID){
-        Validator.validateIntID(userID);
-        return repo.find(userID);
+        var rez =  repo.findOne(userID);
+        if(rez.isEmpty()) throw new ServiceException("User could not be found");
+        return rez.get();
     }
 
     /**
@@ -138,11 +148,11 @@ public class ServiceUser {
         community.getUsers().add(user);
         community.setSize(community.getSize() + 1);
         addedUsers.add(user);
-        for(var friend: user.getFriendsID()){
-            if(!addedUsers.contains(findUser(friend))) {
-                createCommunity(findUser(friend), community, addedUsers);
-            }
-        }
+        Predicate<Integer> predicate = fr -> !addedUsers.contains(findUser(fr));
+        user.getFriendsID().forEach(fr -> {
+            if(predicate.test(fr))
+                createCommunity(findUser(fr), community, addedUsers);
+        });
     }
 
     /**
@@ -152,13 +162,14 @@ public class ServiceUser {
     private ArrayList<Community> getCommunites(){
         ArrayList<Community> communities = new ArrayList<>();
         ArrayList<User> addedUsers = new ArrayList<>();
-        for(var user : repo.findAll()){
-            if(!addedUsers.contains(user)){
+        Predicate<User> predicate = addedUsers::contains;
+        repo.findAll().forEach(user ->{
+            if(predicate.negate().test(user)){
                 var community = new Community();
                 createCommunity(user, community, addedUsers);
                 communities.add(community);
             }
-        }
+        });
         return communities;
     }
 

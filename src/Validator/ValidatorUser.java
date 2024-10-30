@@ -2,10 +2,12 @@ package Validator;
 import Domain.*;
 import Exceptions.ValidatorException;
 
+import java.util.Objects;
+
 /**
  * Validator for users.
  */
-public class ValidatorUser {
+public class ValidatorUser extends ValidatorInt<User> {
     /**
      * Constructor for class.
      */
@@ -16,9 +18,9 @@ public class ValidatorUser {
      * @throws ValidatorException if user is not valid.
      * @param user User
      */
-    public static void validate(User user){
+    public void validate(User user){
         String errors = null;
-        if(user.getName() == null) errors += "Nume invalid!";
+        if(user.getName() == null || Objects.equals(user.getName(), "\n")) errors += "Nume invalid!";
         if (errors != null) throw new ValidatorException(errors);
     }
 }

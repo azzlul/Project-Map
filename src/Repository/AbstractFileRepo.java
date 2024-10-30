@@ -1,6 +1,9 @@
 package Repository;
 
+import Validator.Validator;
+
 import java.io.*;
+import java.util.Optional;
 
 /**
  * Repository that stores information in a given file.
@@ -67,30 +70,9 @@ public abstract class AbstractFileRepo<ID, Entity extends Domain.Entity<ID>> ext
     }
 
     @Override
-    public void add(Entity entity) {
+    public Optional<Entity> findOne(ID id) {
         readFromFile();
-        super.add(entity);
-        writeToFile();
-    }
-
-    @Override
-    public void update(Entity entity) {
-        readFromFile();
-        super.update(entity);
-        writeToFile();
-    }
-
-    @Override
-    public void remove(ID id) {
-        readFromFile();
-        super.remove(id);
-        writeToFile();
-    }
-
-    @Override
-    public Entity find(ID id) {
-        readFromFile();
-        return super.find(id);
+        return super.findOne(id);
     }
 
     @Override
@@ -100,8 +82,32 @@ public abstract class AbstractFileRepo<ID, Entity extends Domain.Entity<ID>> ext
     }
 
     @Override
+    public Optional<Entity> save(Entity entity) {
+        readFromFile();
+        var result = super.save(entity);
+        writeToFile();
+        return result;
+    }
+
+    @Override
+    public Optional<Entity> delete(ID id) {
+        readFromFile();
+        var result = super.delete(id);
+        writeToFile();
+        return result;
+    }
+
+    @Override
+    public Optional<Entity> update(Entity entity) {
+        readFromFile();
+        var result = super.update(entity);
+        writeToFile();
+        return result;
+    }
+
+    @Override
     public int size() {
         readFromFile();
-        return super.size();
+        return entities.size();
     }
 }

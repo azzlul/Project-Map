@@ -1,18 +1,20 @@
 package Repository;
 import Domain.Friendship;
+import Validator.ValidatorFriendship;
 
 import java.util.Random;
 
 /**
  * File repository for friendships.
  */
-public class FriendshipFileRepo extends AbstractFileRepo<Integer, Friendship>{
+public class FriendshipFileRepo extends AbstractFileRepoIntID<Friendship>{
     /**
      * Constructor for class.
      * @param file_path path to file
      */
     public FriendshipFileRepo(String file_path) {
         super(file_path);
+        validator = new ValidatorFriendship();
     }
 
     @Override
@@ -26,9 +28,5 @@ public class FriendshipFileRepo extends AbstractFileRepo<Integer, Friendship>{
     @Override
     protected String writeEntity(Friendship entity) {
         return entity.getId() + ";" + entity.getFirstUserID() + ";" + entity.getSecondUserID();
-    }
-    @Override
-    protected Integer generateID() {
-        return generateIDInt();
     }
 }

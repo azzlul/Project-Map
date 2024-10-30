@@ -1,5 +1,4 @@
 package Domain;
-import Domain.User;
 import java.util.ArrayList;
 
 /**

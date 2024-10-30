@@ -117,9 +117,7 @@ public class UI {
      */
     private void listUsers(){
         if(srv.sizeUsers() > 0) {
-            for (var user : srv.findAllUsers()) {
-                System.out.println(user);
-            }
+            srv.findAllUsers().forEach(System.out::println);
         }
         else System.out.println("No users found!");
     }
@@ -129,13 +127,13 @@ public class UI {
      */
     private void listFriendships(){
         if(srv.sizeFriendships() > 0) {
-            for (var friendship : srv.findAllFriendships()) {
+            srv.findAllFriendships().forEach(friendship -> {
                 var user1 = srv.findUser(friendship.getFirstUserID());
                 var user2 = srv.findUser(friendship.getSecondUserID());
                 System.out.println(user1.getName() +
                         "(ID: " + user1.getId() + ") is friends with " + user2.getName() +
                         "(ID: " + user2.getId() + ")  (FriendshipID:" + friendship.getId() + ")");
-            }
+            });
         }
         else System.out.println("No friendships found!");
     }
