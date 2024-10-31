@@ -4,6 +4,7 @@ import Repository.*;
 import Domain.Friendship;
 
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 /**
  * Class that handles operations on a friendship repository.
@@ -91,7 +92,9 @@ public class ServiceFriendship {
                 friendship.getFirstUserID() == firstUserID && friendship.getSecondUserID() == secondUserID ||
                         friendship.getFirstUserID() == secondUserID && friendship.getSecondUserID() == firstUserID;
         for(var friendship : it)  if(found.test(friendship)) return friendship;
-        throw new ServiceException("Friendship not found!");
+        var friendship = StreamSupport.stream(it.spliterator(), false).filter(found).findFirst();
+        if(friendship.isEmpty())throw new ServiceException("Friendship not found!");
+        return friendship.get();
     }
 
     /**

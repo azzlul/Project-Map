@@ -8,6 +8,7 @@ import Validator.Validator;
 import Validator.ValidatorUser;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.function.Predicate;
 
 /**
@@ -184,18 +185,14 @@ public class ServiceUser {
 
     /**
      * Returns the biggest community.
+     * @throws ServiceException if there are no communities
      * @return Community
      */
     public Community maxCommunity(){
         var communities = getCommunites();
-        var max = 0;
-        var maxIndex = 0;
-        for(var community : communities){
-            if(community.getSize() > max){
-                max = community.getSize();
-                maxIndex = communities.indexOf(community);
-            }
-        }
-        return communities.get(maxIndex);
+        Comparator<Community> comparator = Comparator.comparing(Community::getSize);
+        var maxCom = communities.stream().max(comparator);
+        if(maxCom.isEmpty()) throw new ServiceException("No community found");
+        return maxCom.get();
     }
 }

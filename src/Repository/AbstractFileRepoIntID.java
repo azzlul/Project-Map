@@ -2,6 +2,9 @@ package Repository;
 
 import Domain.Entity;
 
+import java.util.Comparator;
+import java.util.stream.StreamSupport;
+
 public abstract class AbstractFileRepoIntID<Entity extends Domain.Entity<Integer>> extends AbstractFileRepo<Integer, Entity>{
     /**
      * Constructor for class.
@@ -14,10 +17,8 @@ public abstract class AbstractFileRepoIntID<Entity extends Domain.Entity<Integer
 
     @Override
     protected Integer generateID() {
-        int lastIntID = 0;
-        for(var x: findAll()){
-            lastIntID = Math.max(lastIntID, x.getId());
-        }
-        return lastIntID+1;
+        Comparator<Entity> comparator = Comparator.comparing(Domain.Entity::getId);
+        var maxIDEntity = StreamSupport.stream(findAll().spliterator(), false).max(comparator);
+        return maxIDEntity.map(entity -> entity.getId() + 1).orElse(1);
     }
 }

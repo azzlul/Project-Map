@@ -66,10 +66,7 @@ public class Community {
     public String toString() {
         StringBuilder msg = new StringBuilder();
         msg.append("Size:").append(size).append("\n");
-        for(var user: users){
-            msg.append(user);
-            msg.append("\n");
-        }
+        users.forEach(user -> {msg.append(user); msg.append("\n");});
         return msg.toString();
     }
 }
