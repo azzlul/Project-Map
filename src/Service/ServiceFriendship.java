@@ -3,6 +3,7 @@ import Exceptions.ServiceException;
 import Repository.*;
 import Domain.Friendship;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
@@ -86,17 +87,13 @@ public class ServiceFriendship {
      * @param secondUserID ID of second user
      * @return friendship with the given ID's
      */
-    public Friendship findByUserID(int firstUserID, int secondUserID) {
+    Optional<Friendship> findByUserID(int firstUserID, int secondUserID) {
         var it = findAll();
         Predicate<Friendship> found = friendship ->
                 friendship.getFirstUserID() == firstUserID && friendship.getSecondUserID() == secondUserID ||
                         friendship.getFirstUserID() == secondUserID && friendship.getSecondUserID() == firstUserID;
-        for(var friendship : it)  if(found.test(friendship)) return friendship;
-        var friendship = StreamSupport.stream(it.spliterator(), false).filter(found).findFirst();
-        if(friendship.isEmpty())throw new ServiceException("Friendship not found!");
-        return friendship.get();
+        return StreamSupport.stream(it.spliterator(), false).filter(found).findFirst();
     }
-
     /**
      * Returns the size of the repository.
      * @return integer

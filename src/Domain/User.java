@@ -14,7 +14,6 @@ public class User extends Entity<Integer>{
     /**
      * List of friends, represented by ID.
      */
-    ArrayList<Integer> friendsID;
 
     /**
      * Constructor for class where the friends list is null.
@@ -22,17 +21,6 @@ public class User extends Entity<Integer>{
      */
     public User(String name) {
         this.name = name;
-        this.friendsID = new ArrayList<>();
-    }
-
-    /**
-     * Constructor for class where the friends list is given.
-     * @param name username
-     * @param friendsID ArrayList with all the user's friendID's
-     */
-    public User(String name, ArrayList<Integer> friendsID) {
-        this.name = name;
-        this.friendsID = friendsID;
     }
 
     /**
@@ -49,22 +37,6 @@ public class User extends Entity<Integer>{
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Returns the friends list.
-     * @return ArrayList with all friend ID's
-     */
-    public ArrayList<Integer> getFriendsID() {
-        return friendsID;
-    }
-
-    /**
-     * Set the friends list.
-     * @param friendsID ArrayList with all friend ID's
-     */
-    public void setFriendsID(ArrayList<Integer> friendsID) {
-        this.friendsID = friendsID;
     }
 
     @Override

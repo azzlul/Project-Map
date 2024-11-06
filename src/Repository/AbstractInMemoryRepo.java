@@ -32,6 +32,8 @@ public abstract class AbstractInMemoryRepo<ID, Entity extends Domain.Entity<ID>>
      * @return new and unique ID
      */
     protected abstract ID generateID();
+
+
     @Override
     public Optional<Entity> findOne(ID id) {
         validator.validateID(id);

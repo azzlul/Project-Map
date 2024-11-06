@@ -4,8 +4,6 @@ import Domain.Friendship;
 import Domain.User;
 import Exceptions.ServiceException;
 import Repository.Repository;
-import Validator.Validator;
-import Validator.ValidatorUser;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,13 +51,6 @@ public class ServiceUser {
         var rez1  = repo.findOne(firstUserID);
         var rez2  = repo.findOne(secondUserID);
         if(rez1.isEmpty() || rez2.isEmpty()) throw new ServiceException("Friendship could not be added");
-        User firstUser = rez1.get();
-        User secondUser = rez2.get();
-        if(firstUser.getFriendsID().contains(secondUserID)) throw new ServiceException("Users are already friends");
-        firstUser.getFriendsID().add(secondUserID);
-        secondUser.getFriendsID().add(firstUserID);
-        repo.update(firstUser);
-        repo.update(secondUser);
         serviceFriendship.add(firstUserID, secondUserID);
     }
 
@@ -73,12 +64,6 @@ public class ServiceUser {
         var rez1 = repo.findOne(friendship.getFirstUserID());
         var rez2 = repo.findOne(friendship.getSecondUserID());
         if(rez1.isEmpty() || rez2.isEmpty()) throw new ServiceException("Friendship could not be removed");
-        User firstUser = rez1.get();
-        User secondUser = rez2.get();
-        firstUser.getFriendsID().remove(secondUser.getId());
-        secondUser.getFriendsID().remove(firstUser.getId());
-        repo.update(firstUser);
-        repo.update(secondUser);
         serviceFriendship.remove(friendshipID);
     }
 
@@ -91,7 +76,11 @@ public class ServiceUser {
         var rez = repo.findOne(userID);
         if(rez.isEmpty()) throw new ServiceException("User could not be removed");
         User user = rez.get();
-        user.getFriendsID().forEach(u -> removeFriendship(serviceFriendship.findByUserID(user.getId(), u).getId()));
+        ArrayList<Integer> friendshipsToRemove = new ArrayList<>();
+        serviceFriendship.findAll().forEach(friendship -> {
+            if(friendship.getFirstUserID() == user.getId() || friendship.getSecondUserID() == user.getId()) friendshipsToRemove.add(friendship.getId());
+        });
+        friendshipsToRemove.forEach(serviceFriendship::remove);
         repo.delete(userID);
     }
 
@@ -143,17 +132,24 @@ public class ServiceUser {
      * Adds to the community the given user and all users linked to the first user by a friendship chain.
      * @param user User
      * @param community Community
-     * @param addedUsers ArrayList that contains all users that were added to any community
+     * @param addedUsers ArrayList that contains ID's of all users that were added to any community
      */
-    private void createCommunity(User user, Community community, ArrayList<User> addedUsers){
+    private void createCommunity(User user, Community community, ArrayList<Integer> addedUsers){
         community.getUsers().add(user);
         community.setSize(community.getSize() + 1);
-        addedUsers.add(user);
-        Predicate<Integer> predicate = fr -> !addedUsers.contains(findUser(fr));
-        user.getFriendsID().forEach(fr -> {
-            if(predicate.test(fr))
-                createCommunity(findUser(fr), community, addedUsers);
-        });
+        addedUsers.add(user.getId());
+//        user.getFriendsID().forEach(fr -> {
+//            if(predicate.test(fr))
+//                createCommunity(findUser(fr), community, addedUsers);
+//        });
+        findAllFriendships().forEach(
+                friendship -> {
+                    if(friendship.getSecondUserID() == user.getId() && !addedUsers.contains(friendship.getFirstUserID()))
+                        createCommunity(findUser(friendship.getFirstUserID()), community, addedUsers);
+                    else if((friendship.getFirstUserID() == user.getId() && !addedUsers.contains(friendship.getSecondUserID())))
+                        createCommunity(findUser(friendship.getSecondUserID()), community, addedUsers);
+                }
+        );
     }
 
     /**
@@ -162,10 +158,10 @@ public class ServiceUser {
      */
     private ArrayList<Community> getCommunites(){
         ArrayList<Community> communities = new ArrayList<>();
-        ArrayList<User> addedUsers = new ArrayList<>();
-        Predicate<User> predicate = addedUsers::contains;
+        ArrayList<Integer> addedUsers = new ArrayList<>();
+        Predicate<Integer> predicate = addedUsers::contains;
         repo.findAll().forEach(user ->{
-            if(predicate.negate().test(user)){
+            if(predicate.negate().test(user.getId())){
                 var community = new Community();
                 createCommunity(user, community, addedUsers);
                 communities.add(community);
