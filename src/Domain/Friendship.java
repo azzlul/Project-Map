@@ -22,7 +22,11 @@ public class Friendship extends Entity<Integer>{
         this.firstUserID = firstUserID;
         this.secondUserID = secondUserID;
     }
-
+    public Friendship(int friendshipID, int firstUserID, int secondUserID) {
+        setId(friendshipID);
+        this.firstUserID = firstUserID;
+        this.secondUserID = secondUserID;
+    }
     /**
      * Returns the ID of the first user.
      * @return integer

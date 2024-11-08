@@ -1,7 +1,5 @@
 package Repository;
 
-import Validator.Validator;
-
 import java.io.*;
 import java.util.Optional;
 
@@ -14,7 +12,7 @@ public abstract class AbstractFileRepo<ID, Entity extends Domain.Entity<ID>> ext
     /**
      * Path for file
      */
-    String filePath;
+    final String filePath;
 
     /**
      * Constructor for class.

@@ -1,8 +1,5 @@
 package Domain;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 /**
  * Class that represents a user on the platform.
  */
@@ -12,17 +9,16 @@ public class User extends Entity<Integer>{
      */
     String name;
     /**
-     * List of friends, represented by ID.
-     */
-
-    /**
      * Constructor for class where the friends list is null.
      * @param name username
      */
     public User(String name) {
         this.name = name;
     }
-
+    public User(int id, String name) {
+        this.setId(id);
+        this.name = name;
+    }
     /**
      * Returns the username.
      * @return String

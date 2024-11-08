@@ -1,6 +1,5 @@
 package Repository;
 import Domain.Entity;
-import Exceptions.RepositoryException;
 
 import java.util.Optional;
 import Exceptions.ValidatorException;

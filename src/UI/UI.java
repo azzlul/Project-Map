@@ -1,6 +1,5 @@
 package UI;
 
-import Exceptions.RepositoryException;
 import Exceptions.ServiceException;
 import Exceptions.UIException;
 import Exceptions.ValidatorException;
@@ -15,7 +14,7 @@ public class UI {
     /**
      * Service for users.
      */
-    ServiceUser srv;
+    final ServiceUser srv;
 
     /**
      * Constructor for class.
@@ -177,7 +176,7 @@ public class UI {
             try{
                 findAndRunCommand(command);
             }
-            catch (RepositoryException | ValidatorException | ServiceException | UIException e){
+            catch (ValidatorException | ServiceException | UIException e){
                 System.out.println(e.getMessage());
             }
         }

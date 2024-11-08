@@ -2,8 +2,6 @@ package Repository;
 import Domain.Friendship;
 import Validator.ValidatorFriendship;
 
-import java.util.Random;
-
 /**
  * File repository for friendships.
  */

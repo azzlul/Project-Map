@@ -14,7 +14,7 @@ public class ServiceFriendship {
     /**
      * Repository of friendships with Integer ID.
      */
-    private Repository<Integer, Friendship> repo = null;
+    private final Repository<Integer, Friendship> repo;
 
     /**
      * Constructor for class.
@@ -33,7 +33,7 @@ public class ServiceFriendship {
     public void add(int firstUserID, int secondUserID) {
         Friendship friendship = new Friendship(firstUserID, secondUserID);
         var result = repo.save(friendship);
-        if(result.isEmpty()) throw new ServiceException("Friendship could be added");
+        if(result.isPresent()) throw new ServiceException("Friendship could not be added");
     }
 
     /**
@@ -47,7 +47,7 @@ public class ServiceFriendship {
         Friendship friendship = new Friendship(firstUserID, secondUserID);
         friendship.setId(friendshipID);
         var result = repo.update(friendship);
-        if(result.isEmpty()) throw new ServiceException("Friendship could be updated");
+        if(result.isEmpty()) throw new ServiceException("Friendship could not be updated");
     }
 
     /**
@@ -57,7 +57,7 @@ public class ServiceFriendship {
      */
     public void remove(int friendshipID) {
         var result = repo.delete(friendshipID);
-        if(result.isEmpty()) throw new ServiceException("Friendship could be removed");
+        if(result.isEmpty()) throw new ServiceException("Friendship could not be removed");
     }
 
     /**

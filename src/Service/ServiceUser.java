@@ -16,11 +16,11 @@ public class ServiceUser {
     /**
      * Repository of users with Integer ID.
      */
-    Repository<Integer, User> repo;
+    final Repository<Integer, User> repo;
     /**
      * Service for friendships.
      */
-    ServiceFriendship serviceFriendship;
+    final ServiceFriendship serviceFriendship;
 
     /**
      * Constructor for class.
@@ -49,8 +49,9 @@ public class ServiceUser {
      */
     public void addFriendship(int firstUserID, int secondUserID){
         var rez1  = repo.findOne(firstUserID);
+        if(rez1.isEmpty()) throw new ServiceException("Friendship could not be added");
         var rez2  = repo.findOne(secondUserID);
-        if(rez1.isEmpty() || rez2.isEmpty()) throw new ServiceException("Friendship could not be added");
+        if(rez2.isEmpty()) throw new ServiceException("Friendship could not be added");
         serviceFriendship.add(firstUserID, secondUserID);
     }
 
@@ -62,8 +63,9 @@ public class ServiceUser {
     public void removeFriendship(int friendshipID){
         Friendship friendship = serviceFriendship.find(friendshipID);
         var rez1 = repo.findOne(friendship.getFirstUserID());
+        if(rez1.isEmpty()) throw new ServiceException("Friendship could not be removed");
         var rez2 = repo.findOne(friendship.getSecondUserID());
-        if(rez1.isEmpty() || rez2.isEmpty()) throw new ServiceException("Friendship could not be removed");
+        if(rez2.isEmpty()) throw new ServiceException("Friendship could not be removed");
         serviceFriendship.remove(friendshipID);
     }
 
@@ -138,10 +140,6 @@ public class ServiceUser {
         community.getUsers().add(user);
         community.setSize(community.getSize() + 1);
         addedUsers.add(user.getId());
-//        user.getFriendsID().forEach(fr -> {
-//            if(predicate.test(fr))
-//                createCommunity(findUser(fr), community, addedUsers);
-//        });
         findAllFriendships().forEach(
                 friendship -> {
                     if(friendship.getSecondUserID() == user.getId() && !addedUsers.contains(friendship.getFirstUserID()))

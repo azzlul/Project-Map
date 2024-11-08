@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import Exceptions.RepositoryException;
 import Validator.*;
 /**
  * Repository where the information is stored in RAM.
@@ -15,7 +14,7 @@ public abstract class AbstractInMemoryRepo<ID, Entity extends Domain.Entity<ID>>
     /**
      * List of all entities in repository.
      */
-    Map<ID, Entity> entities;
+    final Map<ID, Entity> entities;
     /**
      * Validator for stored entities
      */
