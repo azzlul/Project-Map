@@ -4,15 +4,22 @@ import Domain.Friendship;
 import Domain.User;
 import Exceptions.ServiceException;
 import Repository.Repository;
+import javafx.beans.property.ObjectPropertyBase;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
+import utils.Observable;
+import utils.Observer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
  * Class that handles operations on a user repository.
  */
-public class ServiceUser {
+public class ServiceUser implements Observable {
     /**
      * Repository of users with Integer ID.
      */
@@ -22,6 +29,7 @@ public class ServiceUser {
      */
     final ServiceFriendship serviceFriendship;
 
+    private ArrayList<Observer> observers = new ArrayList<>();
     /**
      * Constructor for class.
      * @param repo user repository
@@ -39,11 +47,13 @@ public class ServiceUser {
      */
     public void addUser(String name){
         var user = new User(name);
+        if(findUserByName(name).isPresent()) throw new ServiceException("User already exists");
         repo.save(user);
+        notifyObservers();
     }
 
     /**
-     * Adds a friendship to the friendship repository, and updates the user's friends list accordingly.
+     * Adds a friendship to the friendship repository
      * @param firstUserID ID of first user
      * @param secondUserID ID of second user
      */
@@ -53,20 +63,39 @@ public class ServiceUser {
         var rez2  = repo.findOne(secondUserID);
         if(rez2.isEmpty()) throw new ServiceException("Friendship could not be added");
         serviceFriendship.add(firstUserID, secondUserID);
+        notifyObservers();
     }
 
     /**
-     * Removes a friendship from the friendship repository, and updates the user's friends list accordingly.
+     * Adds a friendship to the friendship repository
+     * @param firstUserID ID of first user
+     * @param secondUserID ID of second user
+     */
+    public void addFriendRequest(int firstUserID, int secondUserID){
+        var rez1  = repo.findOne(firstUserID);
+        if(rez1.isEmpty()) throw new ServiceException("Friendship could not be added");
+        var rez2  = repo.findOne(secondUserID);
+        if(rez2.isEmpty()) throw new ServiceException("Friendship could not be added");
+        serviceFriendship.addRequest(firstUserID, secondUserID);
+        notifyObservers();
+    }
+
+    /**
+     * Accepts a friend request
+     * @param friendshipID ID of friendship
+     */
+    public void acceptFriendRequest(int friendshipID){
+        serviceFriendship.acceptRequest(friendshipID);
+        notifyObservers();
+    }
+    /**
+     * Removes a friendship from the friendship repository
      * @throws ServiceException if friendship could not be removed.
      * @param friendshipID ID of the friendship
      */
     public void removeFriendship(int friendshipID){
-        Friendship friendship = serviceFriendship.find(friendshipID);
-        var rez1 = repo.findOne(friendship.getFirstUserID());
-        if(rez1.isEmpty()) throw new ServiceException("Friendship could not be removed");
-        var rez2 = repo.findOne(friendship.getSecondUserID());
-        if(rez2.isEmpty()) throw new ServiceException("Friendship could not be removed");
         serviceFriendship.remove(friendshipID);
+        notifyObservers();
     }
 
     /**
@@ -84,6 +113,7 @@ public class ServiceUser {
         });
         friendshipsToRemove.forEach(serviceFriendship::remove);
         repo.delete(userID);
+        notifyObservers();
     }
 
     /**
@@ -98,6 +128,17 @@ public class ServiceUser {
         return rez.get();
     }
 
+    /**
+     * Returns the first user with the given name
+     * @param name String
+     * @return User
+     */
+    public Optional<User> findUserByName(String name){
+        for(var user : repo.findAll()){
+            if(user.getName().equals(name)) return Optional.of(user);
+        }
+        return Optional.empty();
+    }
     /**
      * Returns an iterable for all users.
      * @return iterable for all users
@@ -188,5 +229,20 @@ public class ServiceUser {
         var maxCom = communities.stream().max(comparator);
         if(maxCom.isEmpty()) throw new ServiceException("No community found");
         return maxCom.get();
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        observers.forEach(Observer::update);
     }
 }

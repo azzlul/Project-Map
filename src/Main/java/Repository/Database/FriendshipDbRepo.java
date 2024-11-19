@@ -7,6 +7,7 @@ import Validator.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class FriendshipDbRepo extends AbstractDbRepo<Integer, Friendship> {
     public FriendshipDbRepo(Connection connection) {
@@ -15,24 +16,30 @@ public class FriendshipDbRepo extends AbstractDbRepo<Integer, Friendship> {
     }
     @Override
     protected Friendship readEntity(ResultSet entity) throws SQLException {
-        return new Friendship(entity.getInt("friendshipid"), entity.getInt("userid1"), entity.getInt("userid2"));
+        return new Friendship(entity.getInt("friendshipid"), entity.getInt("userid1"), entity.getInt("userid2"),
+                entity.getTimestamp("friendsfrom").toLocalDateTime(), entity.getBoolean("accepted"));
     }
 
     @Override
     protected void insertDb(Friendship entity) throws SQLException {
-        var st = connection.prepareStatement("insert into friendships values(?,?,?)");
+        var st = connection.prepareStatement("insert into friendships values(?,?,?,?,?)");
         st.setInt(1, entity.getId());
         st.setInt(2, entity.getFirstUserID());
         st.setInt(3, entity.getSecondUserID());
+        st.setTimestamp(4, Timestamp.valueOf(entity.getFriendsFrom()));
+        st.setBoolean(5,entity.isAccepted());
         st.executeUpdate();
     }
 
     @Override
     protected void updateDb(Friendship entity) throws SQLException {
-        var st = connection.prepareStatement("update friendships set firstUserID = ?, secondUserID = ? where friendshipid = ?");
+        var st = connection.prepareStatement("update friendships set userid1 = ?, userid2 = ?, friendsfrom = ?," +
+                                                 "accepted = ? where friendshipid = ?");
         st.setInt(1, entity.getFirstUserID());
         st.setInt(2, entity.getSecondUserID());
-        st.setInt(3, entity.getId());
+        st.setTimestamp(3, Timestamp.valueOf(entity.getFriendsFrom()));
+        st.setBoolean(4,entity.isAccepted());
+        st.setInt(5, entity.getId());
         st.executeUpdate();
     }
 

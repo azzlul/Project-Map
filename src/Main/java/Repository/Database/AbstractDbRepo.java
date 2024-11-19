@@ -14,7 +14,7 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
     Validator<ID, E> validator;
     /**
      * Creates an entity based on the query result
-     * @param entity querry result
+     * @param entity query result
      * @return Entity
      */
     protected abstract E readEntity(ResultSet entity) throws SQLException;
@@ -123,6 +123,7 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
         validator.validate(entity);
         try{
             if(findOne(entity.getId()).isEmpty()) return Optional.of(entity);
+            System.out.println("test");
             updateDb(entity);
             return Optional.empty();
         }

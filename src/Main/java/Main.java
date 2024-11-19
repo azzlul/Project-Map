@@ -1,5 +1,3 @@
-package Main;
-
 import Repository.Database.FriendshipDbRepo;
 import Repository.Database.UserDbRepo;
 import Service.ServiceUser;

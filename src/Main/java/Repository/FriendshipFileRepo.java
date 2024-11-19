@@ -18,9 +18,10 @@ public class FriendshipFileRepo extends AbstractFileRepoIntID<Friendship>{
     @Override
     protected Friendship readEntity(String line) {
         String[] split = line.split(";");
-        Friendship f = new Friendship(Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-        f.setId(Integer.parseInt(split[0]));
-        return f;
+        //Friendship f = new Friendship(Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+       // f.setId(Integer.parseInt(split[0]));
+       // return f;
+        return null;
     }
 
     @Override

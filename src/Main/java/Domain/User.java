@@ -38,7 +38,7 @@ public class User extends Entity<Integer>{
     @Override
     public String toString() {
         return
-                "Name:" + name + ' ' +
+                name + ' ' +
                 "ID: " + getId();
     }
 }
