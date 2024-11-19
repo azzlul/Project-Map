@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.FriendListController">
+   <children>
+      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0">
+         <children>
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#switchLoginScreen" text="Back" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </VBox.margin></Button>
+            <Label text="Friends:">
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="23.0" />
+               </font></Label>
+            <ListView fx:id="friendsList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#makeDeleteButtonVisible" prefHeight="320.0" prefWidth="300.0" />
+            <Button fx:id="addFriendButton" mnemonicParsing="false" onAction="#openFriendRequestWindow" prefHeight="42.0" prefWidth="140.0" text="Make Friend Request">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" />
+               </VBox.margin></Button>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0">
+         <children>
+            <Label prefHeight="17.0" prefWidth="305.0" text="Friend Requests:">
+               <font>
+                  <Font size="23.0" />
+               </font></Label>
+            <ListView fx:id="friendRequestList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#makeAcceptRejectButtonsVisible" prefHeight="320.0" prefWidth="300.0" />
+         </children>
+         <padding>
+            <Insets bottom="55.0" top="38.0" />
+         </padding></VBox>
+   </children>
+</HBox>

@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class AddScreen {
+public class AddScreenController {
 
     public TextField requestField;
     public ServiceUser srv;
