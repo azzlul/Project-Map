@@ -17,10 +17,10 @@ public class ValidatorFriendship extends ValidatorInt<Friendship> {
      * @param friendship Friendship
      */
     public void validate(Friendship friendship) {
-        String errors = null;
+        String errors = "";
         if(friendship.getFirstUserID() <= 0) errors += "First user ID invalid!\n";
         if(friendship.getSecondUserID() <= 0) errors += "Second user ID invalid!\n";
-        if(friendship.getFirstUserID() == friendship.getSecondUserID()) errors += "User ID's can't be equal!\n";
-        if(errors != null) throw new ValidatorException(errors);
+        if(friendship.getFirstUserID() == friendship.getSecondUserID()) errors += "You cannot be friends with yourself!!\n";
+        if(!errors.isEmpty()) throw new ValidatorException(errors);
     }
 }

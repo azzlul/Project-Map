@@ -22,12 +22,11 @@ public class FriendshipDbRepo extends AbstractDbRepo<Integer, Friendship> {
 
     @Override
     protected void insertDb(Friendship entity) throws SQLException {
-        var st = connection.prepareStatement("insert into friendships values(?,?,?,?,?)");
-        st.setInt(1, entity.getId());
-        st.setInt(2, entity.getFirstUserID());
-        st.setInt(3, entity.getSecondUserID());
-        st.setTimestamp(4, Timestamp.valueOf(entity.getFriendsFrom()));
-        st.setBoolean(5,entity.isAccepted());
+        var st = connection.prepareStatement("insert into friendships (userid1, userid2, friendsfrom, accepted) values(?,?,?,?)");
+        st.setInt(1, entity.getFirstUserID());
+        st.setInt(2, entity.getSecondUserID());
+        st.setTimestamp(3, Timestamp.valueOf(entity.getFriendsFrom()));
+        st.setBoolean(4,entity.isAccepted());
         st.executeUpdate();
     }
 
@@ -67,18 +66,5 @@ public class FriendshipDbRepo extends AbstractDbRepo<Integer, Friendship> {
     protected ResultSet sizeDb() throws SQLException {
         var st = connection.prepareStatement("select count(*) from friendships");
         return st.executeQuery();
-    }
-
-    @Override
-    protected Integer generateID() {
-        try{
-            var st = connection.prepareStatement("select max(friendshipid) from friendships");
-            var result = st.executeQuery();
-            if(!result.next()) return 1;
-            return result.getInt(1) + 1;
-        }
-        catch (SQLException e){
-            throw new RepositoryException(e.getMessage());
-        }
     }
 }

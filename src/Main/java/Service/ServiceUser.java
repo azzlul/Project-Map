@@ -29,7 +29,7 @@ public class ServiceUser implements Observable {
      */
     final ServiceFriendship serviceFriendship;
 
-    private ArrayList<Observer> observers = new ArrayList<>();
+    private final ArrayList<Observer> observers = new ArrayList<>();
     /**
      * Constructor for class.
      * @param repo user repository
@@ -106,12 +106,6 @@ public class ServiceUser implements Observable {
     public void removeUser(int userID){
         var rez = repo.findOne(userID);
         if(rez.isEmpty()) throw new ServiceException("User could not be removed");
-        User user = rez.get();
-        ArrayList<Integer> friendshipsToRemove = new ArrayList<>();
-        serviceFriendship.findAll().forEach(friendship -> {
-            if(friendship.getFirstUserID() == user.getId() || friendship.getSecondUserID() == user.getId()) friendshipsToRemove.add(friendship.getId());
-        });
-        friendshipsToRemove.forEach(serviceFriendship::remove);
         repo.delete(userID);
         notifyObservers();
     }

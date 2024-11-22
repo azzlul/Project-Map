@@ -21,9 +21,8 @@ public class UserDbRepo extends AbstractDbRepo<Integer, User> {
 
     @Override
     protected void insertDb(User entity) throws SQLException {
-        var st = connection.prepareStatement("insert into users values(?, ?)");
-        st.setInt(1, entity.getId());
-        st.setString(2, entity.getName());
+        var st = connection.prepareStatement("insert into users(username) values(?)");
+        st.setString(1, entity.getName());
         st.executeUpdate();
     }
 
@@ -59,18 +58,5 @@ public class UserDbRepo extends AbstractDbRepo<Integer, User> {
     protected ResultSet sizeDb() throws SQLException {
         var st = connection.prepareStatement("select count(*) from users");
         return st.executeQuery();
-    }
-
-    @Override
-    protected Integer generateID() {
-        try{
-            var st = connection.prepareStatement("select max(userid) from users");
-            var result = st.executeQuery();
-            if(!result.next()) return 1;
-            return result.getInt(1) + 1;
-        }
-        catch (SQLException e ){
-            throw new RepositoryException(e.getMessage());
-        }
     }
 }

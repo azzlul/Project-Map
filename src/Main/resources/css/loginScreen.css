@@ -1,0 +1,9 @@
+#background{
+    -fx-background-image: url('../images/loginBackground.png');
+}
+
+#loginText{
+    -fx-highlight-fill: white;
+    -fx-text-box-border: white;
+    -fx-focus-color: white;
+}

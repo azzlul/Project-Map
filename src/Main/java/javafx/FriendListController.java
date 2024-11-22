@@ -77,8 +77,10 @@ public class FriendListController implements Initializable, Observer {
         Button button = new Button("Delete");
         label.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(label, Priority.ALWAYS);
+        label.setStyle("-fx-text-fill: #FFFFFF");
         button.setOnAction(actionEvent -> srv.removeFriendship(friendship.getId()));
         button.setVisible(false);
+        button.getStylesheets().add(getClass().getClassLoader().getResource("css/friendListButton.css").toExternalForm());
         HBox hbox = new HBox();
         hbox.getChildren().addAll(label, button);
         friends.add(hbox);
@@ -92,16 +94,19 @@ public class FriendListController implements Initializable, Observer {
                 Label label = new Label(srv.findUser(friendship.getFirstUserID()).getName() + " " + friendship.getFriendsFrom().format(DateTimeFormatter.ISO_DATE));
                 label.setMaxWidth(Double.MAX_VALUE);
                 HBox.setHgrow(label, Priority.ALWAYS);
+                label.setStyle("-fx-text-fill: #535bc5");
                 Button button = new Button("Accept");
                 button.setOnAction(actionEvent -> {
                     srv.acceptFriendRequest(friendship.getId());
                 });
                 button.setVisible(false);
+                button.getStylesheets().add(getClass().getClassLoader().getResource("css/friendRequestListButton.css").toExternalForm());
                 Button button2 = new Button("Reject");
                 button2.setOnAction(actionEvent -> {
                     srv.removeFriendship(friendship.getId());
                 });
                 button2.setVisible(false);
+                button2.getStylesheets().add(getClass().getClassLoader().getResource("css/friendRequestListButton.css").toExternalForm());
                 HBox hbox = new HBox();
                 hbox.getChildren().addAll(label, button, button2);
                 friendRequests.add(hbox);
@@ -113,10 +118,12 @@ public class FriendListController implements Initializable, Observer {
         Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/addScreen.fxml"));
         Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/addScreen.css").toExternalForm());
         AddScreenController controller = loader.getController();
         controller.setSrv(srv);
         controller.setUser(activeUser);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.setTitle("Send friend request");
         stage.show();
     }

@@ -48,8 +48,11 @@ public class ServiceFriendship {
      */
     public void addRequest(int firstUserID, int secondUserID){
         Friendship friendship = new Friendship(firstUserID, secondUserID, LocalDateTime.now(), false);
-        if(findByUserID(firstUserID, secondUserID).isPresent() || findByUserID(secondUserID, firstUserID).isPresent()) {
-            throw new ServiceException("Friendship already exists");
+        var check = findByUserID(firstUserID, secondUserID);
+        if(check.isPresent()) {
+            if(check.get().isAccepted())throw new ServiceException("You are already friends with that user!");
+            if(!check.get().isAccepted() && check.get().getFirstUserID() == firstUserID) throw new ServiceException("You already sent a friend request to that user!");
+            if(!check.get().isAccepted() && check.get().getFirstUserID() == secondUserID) throw new ServiceException("This user has already sent a friend request to you!");
         }
         var result = repo.save(friendship);
         if(result.isPresent()) throw new ServiceException("Friendship request could not be added");

@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="137.0" prefWidth="513.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.AddScreenController">
+<HBox fx:id="background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="69.0" prefWidth="513.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.AddScreenController">
    <children>
-      <VBox alignment="CENTER" prefHeight="137.0" prefWidth="624.0">
+      <VBox alignment="CENTER" prefHeight="102.0" prefWidth="513.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="73.0" prefWidth="513.0">
+            <HBox alignment="CENTER" prefHeight="91.0" prefWidth="513.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="49.0" prefWidth="43.0" text="Name:">
+                  <Label fx:id="nameLabel" alignment="CENTER" prefHeight="49.0" prefWidth="43.0" text="Name:">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -21,8 +22,17 @@
                      </font>
                   </TextField>
                </children></HBox>
-            <Label fx:id="errorLabel" textFill="RED" />
+            <Label fx:id="errorLabel" textFill="RED">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="2.0" />
+               </padding></Label>
          </children>
       </VBox>
    </children>
+   <padding>
+      <Insets top="15.0" />
+   </padding>
 </HBox>

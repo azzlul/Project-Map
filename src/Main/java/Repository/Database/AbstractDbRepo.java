@@ -56,11 +56,6 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
      */
     protected abstract ResultSet sizeDb() throws SQLException;
 
-    /**
-     * Generate ID for entity
-     * @return ID
-     */
-    protected abstract ID generateID();
     @Override
     public Optional<E> findOne(ID id) {
         validator.validateID(id);
@@ -70,7 +65,8 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
             return Optional.of(readEntity(result));
         }
         catch (SQLException e){
-            throw new RepositoryException(e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 
@@ -85,7 +81,8 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
             return set;
         }
         catch (SQLException e) {
-            throw new RepositoryException(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -94,12 +91,12 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
         validator.validateNull(entity);
         validator.validate(entity);
         try{
-            entity.setId(generateID());
             insertDb(entity);
             return Optional.empty();
         }
         catch (SQLException e){
-            throw new RepositoryException(e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 
@@ -113,7 +110,8 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
             return result;
         }
         catch (SQLException e){
-            throw new RepositoryException(e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 
@@ -128,7 +126,8 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
             return Optional.empty();
         }
         catch (SQLException e){
-            throw new RepositoryException(e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
         }
     }
 
@@ -140,7 +139,8 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
             return result.getInt(1);
         }
         catch (SQLException e){
-            throw new RepositoryException(e.getMessage());
+            e.printStackTrace();
+            return 0;
         }
     }
 }

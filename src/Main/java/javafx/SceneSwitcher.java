@@ -11,31 +11,34 @@ import java.io.IOException;
 public class SceneSwitcher {
     Stage stage;
     ServiceUser srv;
-    String loginScene;
-    String friendsListScene;
-
-    public SceneSwitcher(Stage stage, ServiceUser srv, String loginScene, String friendsListScene) {
+    String loginScene = "fxml/loginScreen.fxml";
+    String loginCSS = "css/loginScreen.css";
+    String friendsListScene = "fxml/friendListScreen.fxml";
+    String friendsListCSS = "css/friendList.css";
+    public SceneSwitcher(Stage stage, ServiceUser srv) {
         this.stage = stage;
         this.srv = srv;
-        this.loginScene = loginScene;
-        this.friendsListScene = friendsListScene;
     }
 
     void switchToLogin() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(loginScene));
         Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(getClass().getClassLoader().getResource(loginCSS).toExternalForm());
         LoginController loginController = loader.getController();
         loginController.setSrv(srv);
         loginController.setSceneSwitcher(this);
+        stage.setTitle("OtherFace");
         stage.setScene(scene);
     }
     void switchToFriendList(User user) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(friendsListScene));
         Scene scene = new Scene(loader.load());
+        scene.getStylesheets().add(getClass().getClassLoader().getResource(friendsListCSS).toExternalForm());
         FriendListController friendListController = loader.getController();
         friendListController.setSrv(srv);
         friendListController.setActiveUser(user);
         friendListController.setSceneSwitcher(this);
+        stage.setTitle("Logged in as: " + user.getName());
         stage.setScene(scene);
     }
 }

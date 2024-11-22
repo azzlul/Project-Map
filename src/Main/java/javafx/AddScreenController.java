@@ -1,11 +1,17 @@
 package javafx;
 
 import Domain.User;
+import Exceptions.RepositoryException;
+import Exceptions.ServiceException;
 import Service.ServiceUser;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class AddScreenController {
 
@@ -24,11 +30,21 @@ public class AddScreenController {
         try {
             var user2 = srv.findUserByName(requestField.getText()).get();
             srv.addFriendRequest(user.getId(), user2.getId());
-            Stage stage = (Stage) requestField.getScene().getWindow();
-            stage.close();
+            Stage stage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/friendRequestConfirm.fxml"));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(getClass().getClassLoader().getResource("css/friendRequestConfirm.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+            Stage stage2 = (Stage) requestField.getScene().getWindow();
+            stage2.close();
         }
-        catch (Exception e) {
+        catch (ServiceException | RepositoryException e) {
             errorLabel.setText(e.getMessage());
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

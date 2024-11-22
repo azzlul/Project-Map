@@ -1,0 +1,14 @@
+.text-field{
+    -fx-highlight-fill: white;
+    -fx-text-box-border: white;
+    -fx-focus-color: white;
+}
+#nameLabel{
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #535bc5;
+}
+
+#background{
+    -fx-background-color: white;
+}
