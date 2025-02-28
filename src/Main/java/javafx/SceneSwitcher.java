@@ -31,6 +31,7 @@ public class SceneSwitcher {
         stage.setScene(scene);
     }
     void switchToFriendList(User user) throws IOException {
+        Stage stage = new Stage();
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(friendsListScene));
         Scene scene = new Scene(loader.load());
         scene.getStylesheets().add(getClass().getClassLoader().getResource(friendsListCSS).toExternalForm());
@@ -39,6 +40,8 @@ public class SceneSwitcher {
         friendListController.setActiveUser(user);
         friendListController.setSceneSwitcher(this);
         stage.setTitle("Logged in as: " + user.getName());
+        stage.setResizable(false);
         stage.setScene(scene);
+        stage.show();
     }
 }

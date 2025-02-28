@@ -3,10 +3,13 @@ package Repository.Database;
 import Domain.User;
 import Exceptions.RepositoryException;
 import Validator.ValidatorUser;
+import utils.Page;
+import utils.Pageable;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 
 public class UserDbRepo extends AbstractDbRepo<Integer, User> {
     public UserDbRepo(Connection connection) {
@@ -58,5 +61,27 @@ public class UserDbRepo extends AbstractDbRepo<Integer, User> {
     protected ResultSet sizeDb() throws SQLException {
         var st = connection.prepareStatement("select count(*) from users");
         return st.executeQuery();
+    }
+
+    protected ResultSet findAllOnPageDb(Pageable pageable) throws SQLException {
+        var st = connection.prepareStatement("select * from users limit ? offset ?");
+        st.setInt(1, pageable.getPageSize());
+        st.setInt(2, pageable.getPageSize() * pageable.getPageNumber());
+        return st.executeQuery();
+    }
+
+    public Page<User> findAllOnPage(Pageable pageable) {
+        try{
+            var result = findAllOnPageDb(pageable);
+            var set = new HashSet<User>();
+            while(result.next()) {
+                set.add(readEntity(result));
+            }
+            return new Page<>(set, size());
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

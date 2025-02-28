@@ -1,7 +1,9 @@
 package Service;
 import Exceptions.ServiceException;
-import Repository.*;
 import Domain.Friendship;
+import Repository.Database.FriendshipDbRepo;
+import utils.Page;
+import utils.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -15,13 +17,13 @@ public class ServiceFriendship {
     /**
      * Repository of friendships with Integer ID.
      */
-    private final Repository<Integer, Friendship> repo;
+    private final FriendshipDbRepo repo;
 
     /**
      * Constructor for class.
      * @param repo Friendship Repository
      */
-    public ServiceFriendship(Repository<Integer, Friendship> repo) {
+    public ServiceFriendship(FriendshipDbRepo repo) {
         this.repo = repo;
     }
 
@@ -76,11 +78,10 @@ public class ServiceFriendship {
      * @param accepted true if the friend request was accepted
      * @throws ServiceException if friendship could not be updated
      */
-    public void update(int friendshipID, int firstUserID, int secondUserID, LocalDateTime timestamp, boolean accepted) {
-        Friendship friendship = new Friendship(firstUserID, secondUserID, timestamp, accepted);
-        friendship.setId(friendshipID);
+    public void update(int friendshipID, int firstUserID, int secondUserID, LocalDateTime timestamp, int firstMessageID, boolean accepted) {
+        Friendship friendship = new Friendship(friendshipID, firstUserID, secondUserID, timestamp, firstMessageID, accepted);
         var result = repo.update(friendship);
-        if(result.isEmpty()) throw new ServiceException("Friendship could not be updated");
+        if(result.isPresent()) throw new ServiceException("Friendship could not be updated");
     }
 
     /**
@@ -113,6 +114,16 @@ public class ServiceFriendship {
         return repo.findAll();
     }
 
+    public Iterable<Friendship> findAllByUserID(int userID) {
+        return repo.findFriendsOfUser(userID);
+    }
+
+    public Iterable<Friendship> findRequestByUserID(int firstUserID) {
+        return repo.findFriendRequestsToUser(firstUserID);
+    }
+    public Page<Friendship> findAllUserIDPaged(int userID, Pageable pageable){
+        return repo.findFriendsOfUserPaged(userID, pageable);
+    }
     /**
      * Returns the friendship corresponding to the given user id's.
      * @throws ServiceException if the friendship is not found.

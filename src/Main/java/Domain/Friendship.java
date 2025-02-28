@@ -20,6 +20,7 @@ public class Friendship extends Entity<Integer>{
     /**
      * True if the friend request was accepted
      */
+    int firstMessageID;
     boolean accepted;
     /**
      * Constructor for friendship.
@@ -32,11 +33,12 @@ public class Friendship extends Entity<Integer>{
         this.friendsFrom = friendsFrom;
         this.accepted = accepted;
     }
-    public Friendship(int friendshipID, int firstUserID, int secondUserID, LocalDateTime friendsFrom, boolean accepted) {
+    public Friendship(int friendshipID, int firstUserID, int secondUserID, LocalDateTime friendsFrom, int firstMessageID, boolean accepted) {
         setId(friendshipID);
         this.firstUserID = firstUserID;
         this.secondUserID = secondUserID;
         this.friendsFrom = friendsFrom;
+        this.firstMessageID = firstMessageID;
         this.accepted = accepted;
     }
     /**
@@ -85,6 +87,14 @@ public class Friendship extends Entity<Integer>{
 
     public void setAccepted(boolean accepted) {
         this.accepted = accepted;
+    }
+
+    public int getFirstMessageID() {
+        return firstMessageID;
+    }
+
+    public void setFirstMessageID(int firstMessageID) {
+        this.firstMessageID = firstMessageID;
     }
 
     @Override

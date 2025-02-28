@@ -1,4 +1,5 @@
 import Repository.Database.FriendshipDbRepo;
+import Repository.Database.MessageDbRepo;
 import Repository.Database.UserDbRepo;
 import Service.ServiceUser;
 import UI.UI;
@@ -27,7 +28,8 @@ public class Main {
         }
         var repoUser = new UserDbRepo(c);
         var repoFriendship = new FriendshipDbRepo(c);
-        var srvUser = new ServiceUser(repoUser, repoFriendship);
+        var repoMessage = new MessageDbRepo(c);
+        var srvUser = new ServiceUser(repoUser, repoFriendship, repoMessage);
         var ui = new UI(srvUser);
         ui.runUI();
     }

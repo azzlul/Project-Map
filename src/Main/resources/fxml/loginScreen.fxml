@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="471.0" prefWidth="605.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.LoginController">
+<BorderPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="907.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.LoginController">
    <center>
-      <VBox alignment="CENTER" prefHeight="252.0" prefWidth="390.0" spacing="30.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="252.0" prefWidth="390.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -18,7 +19,20 @@
                   <Image url="@../images/logo.png" />
                </image>
             </ImageView>
-            <TextField fx:id="loginText" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#attemptLogin" promptText="Username" />
+            <TextField fx:id="loginText" maxHeight="-Infinity" maxWidth="-Infinity" promptText="Username" />
+            <HBox alignment="CENTER" prefHeight="47.0" prefWidth="897.0" spacing="20.0">
+               <children>
+                  <Button fx:id="signupButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#attemptSignup" prefHeight="30.0" prefWidth="60.0" text="Sign up">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#attemptLogin" prefHeight="30.0" prefWidth="60.0" text="Login" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
             <Label fx:id="errorLabel" textFill="RED" />
          </children>
       </VBox>

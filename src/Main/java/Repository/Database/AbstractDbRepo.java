@@ -4,6 +4,8 @@ import Domain.Entity;
 import Exceptions.RepositoryException;
 import Repository.Repository;
 import Validator.Validator;
+import utils.Page;
+import utils.Pageable;
 
 import java.sql.*;
 import java.util.HashSet;
@@ -85,7 +87,6 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
             return null;
         }
     }
-
     @Override
     public Optional<E> save(E entity) {
         validator.validateNull(entity);
@@ -127,7 +128,7 @@ public abstract class AbstractDbRepo<ID, E extends Entity<ID>> implements Reposi
         }
         catch (SQLException e){
             e.printStackTrace();
-            return Optional.empty();
+            return Optional.of(entity);
         }
     }
 

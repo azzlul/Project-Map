@@ -1,18 +1,21 @@
 package Service;
 import Domain.Community;
 import Domain.Friendship;
+import Domain.Message;
 import Domain.User;
 import Exceptions.ServiceException;
+import Repository.Database.FriendshipDbRepo;
+import Repository.Database.MessageDbRepo;
+import Repository.Database.UserDbRepo;
 import Repository.Repository;
-import javafx.beans.property.ObjectPropertyBase;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import utils.Observable;
 import utils.Observer;
+import utils.Page;
+import utils.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -23,11 +26,12 @@ public class ServiceUser implements Observable {
     /**
      * Repository of users with Integer ID.
      */
-    final Repository<Integer, User> repo;
+    final UserDbRepo repo;
     /**
      * Service for friendships.
      */
     final ServiceFriendship serviceFriendship;
+    final ServiceMessage serviceMessage;
 
     private final ArrayList<Observer> observers = new ArrayList<>();
     /**
@@ -35,9 +39,10 @@ public class ServiceUser implements Observable {
      * @param repo user repository
      * @param repoFriendship friendship repository
      */
-    public ServiceUser(Repository<Integer, User> repo, Repository<Integer, Friendship> repoFriendship) {
+    public ServiceUser(UserDbRepo repo, FriendshipDbRepo repoFriendship, MessageDbRepo repoMessage) {
         this.repo = repo;
         serviceFriendship = new ServiceFriendship(repoFriendship);
+        serviceMessage = new ServiceMessage(repoMessage);
     }
 
     /**
@@ -66,6 +71,14 @@ public class ServiceUser implements Observable {
         notifyObservers();
     }
 
+    public void addMessage(int fromID, int toID, String message, LocalDateTime date,  int replyID){
+        var rez1  = repo.findOne(fromID);
+        if(rez1.isEmpty()) throw new ServiceException("Message could not be added");
+        var rez2  = repo.findOne(toID);
+        if(rez2.isEmpty()) throw new ServiceException("Message could not be added");
+        serviceMessage.add(fromID, toID, message, date, replyID);
+        notifyObservers();
+    }
     /**
      * Adds a friendship to the friendship repository
      * @param firstUserID ID of first user
@@ -87,6 +100,26 @@ public class ServiceUser implements Observable {
     public void acceptFriendRequest(int friendshipID){
         serviceFriendship.acceptRequest(friendshipID);
         notifyObservers();
+    }
+
+    public void updateMessage(int messageId, int toId, int fromId, String message, LocalDateTime date, int replyID){
+        serviceMessage.update(messageId, toId, fromId, message, date, replyID);
+    }
+    public void setFirstMessage(int firstUserID, int secondUserID, int messageID){
+        var rez1  = repo.findOne(firstUserID);
+        if(rez1.isEmpty()) throw new ServiceException("Message could not be set");
+        var rez2  = repo.findOne(secondUserID);
+        if(rez2.isEmpty()) throw new ServiceException("Message could not be set");
+        var friendship = serviceFriendship.findByUserID(firstUserID, secondUserID);
+        if(friendship.isEmpty()) throw new ServiceException("Message could not be set");
+        serviceFriendship.update(friendship.get().getId(), friendship.get().getFirstUserID(), friendship.get().getSecondUserID(), friendship.get().getFriendsFrom(),
+                messageID, friendship.get().isAccepted());
+        notifyObservers();
+    }
+
+    public void setReplyMessage(int firstMessageID, int secondMessageID){
+        var msg = serviceMessage.find(firstMessageID);
+        serviceMessage.update(firstMessageID, msg.getToID(), msg.getFromID(), msg.getMessage(), msg.getDateTime(), secondMessageID);
     }
     /**
      * Removes a friendship from the friendship repository
@@ -110,6 +143,10 @@ public class ServiceUser implements Observable {
         notifyObservers();
     }
 
+    public void removeMessage(int messageID){
+        serviceMessage.remove(messageID);
+        notifyObservers();
+    }
     /**
      * Returns the user with the given ID.
      * @throws ServiceException if user couldn't be found
@@ -122,6 +159,25 @@ public class ServiceUser implements Observable {
         return rez.get();
     }
 
+    public Message findMessage(int messageID){
+        return serviceMessage.find(messageID);
+    }
+
+    public Iterable<Message> findMessagesFromUsers(int userid1, int userid2){
+        var rez =  repo.findOne(userid1);
+        if(rez.isEmpty()) throw new ServiceException("Message could not be found");
+        var rez2 = repo.findOne(userid2);
+        if(rez2.isEmpty()) throw new ServiceException("Message could not be found");
+        return serviceMessage.findMessagesFromUsers(userid1, userid2);
+    }
+
+    public Message findLastMessageFromUsers(int userid1, int userid2){
+        var rez =  repo.findOne(userid1);
+        if(rez.isEmpty()) throw new ServiceException("Message could not be found");
+        var rez2 = repo.findOne(userid2);
+        if(rez2.isEmpty()) throw new ServiceException("Message could not be found");
+        return serviceMessage.findLastMessageFromUsers(userid1, userid2);
+    }
     /**
      * Returns the first user with the given name
      * @param name String
@@ -133,6 +189,10 @@ public class ServiceUser implements Observable {
         }
         return Optional.empty();
     }
+
+    public Optional<Friendship> findFriendshipByUserID(int userID1, int userID2){
+        return serviceFriendship.findByUserID(userID1, userID2);
+    }
     /**
      * Returns an iterable for all users.
      * @return iterable for all users
@@ -141,6 +201,13 @@ public class ServiceUser implements Observable {
         return repo.findAll();
     }
 
+    public Page<User> findAllUsersOnPage(Pageable pageable){
+        return repo.findAllOnPage(pageable);
+    }
+    public Page<Friendship> findALlFriendshipsByUserIDPaged(int userID, Pageable pageable){
+        findUser(userID);
+        return serviceFriendship.findAllUserIDPaged(userID, pageable);
+    }
     /**
      * Returns an iterable for all friendships.
      * @return iterable for all friendships
@@ -149,6 +216,19 @@ public class ServiceUser implements Observable {
         return serviceFriendship.findAll();
     }
 
+    public Iterable<Message> findAllMessages(){
+        return serviceMessage.findAll();
+    }
+
+    public Iterable<Friendship> findAllFriendshipsByUserID(int userID){
+        findUser(userID);
+        return serviceFriendship.findAllByUserID(userID);
+    }
+
+    public Iterable<Friendship> findRequestByUserID(int userID){
+        findUser(userID);
+        return serviceFriendship.findRequestByUserID(userID);
+    }
     /**
      * Returns the size of the user repository.
      * @return integer
@@ -165,6 +245,9 @@ public class ServiceUser implements Observable {
         return serviceFriendship.size();
     }
 
+    public int sizeMessages(){
+        return serviceMessage.size();
+    }
     /**
      * Adds to the community the given user and all users linked to the first user by a friendship chain.
      * @param user User

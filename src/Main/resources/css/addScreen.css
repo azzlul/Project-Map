@@ -12,3 +12,11 @@
 #background{
     -fx-background-color: white;
 }
+
+
+#addButton{
+    -fx-background-color: #777ee1;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}

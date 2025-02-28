@@ -7,3 +7,23 @@
     -fx-text-box-border: white;
     -fx-focus-color: white;
 }
+
+#loginButton{
+    -fx-background-color: #777ee1;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+#loginButton:pressed{
+    -fx-background-color: #3B45D4;
+}
+
+#signupButton{
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #535bc5;
+}
+#signupButton:pressed{
+    -fx-background-color: #cfcfcf;
+}
