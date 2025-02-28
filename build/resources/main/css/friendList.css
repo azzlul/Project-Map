@@ -1,0 +1,103 @@
+#background{
+    -fx-background-image: url(../Images/friendsListBackground.png);
+}
+
+#FriendsLabel{
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+#chatLabel{
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #535bc5;
+}
+
+#addFriendButton{
+    -fx-font-family: "Roboto Thin";
+}
+
+#friendsList{
+    -fx-background-color: transparent;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-size: 15;
+}
+
+.list-cell{
+    -fx-background-color: rgb(255, 255, 255, 0.2);
+}
+
+#friendsList .list-cell:selected{
+    -fx-background-color: #535bc5;
+}
+#backButton{
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-font-size: 15;
+    -fx-text-fill: #535bc5;
+}
+#backButton:pressed{
+    -fx-background-color: #cfcfcf;
+}
+
+#addFriendButton{
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-font-size: 15;
+    -fx-text-fill: #535bc5;
+}
+#addFriendButton:pressed{
+    -fx-background-color: #cfcfcf;
+}
+
+#friendRequestButton{
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+#chatWindow{
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+#chatInput{
+    -fx-highlight-fill: white;
+    -fx-text-box-border: white;
+    -fx-focus-color: white;
+}
+
+#closeReplyButton{
+    -fx-background-color: transparent;
+    -fx-background-image: url(../Images/closeReply.png);
+}
+
+#chatButton{
+    -fx-background-image: url(../Images/chatButton.png);
+    -fx-background-color: transparent;
+}
+
+#previousButton{
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #535bc5;
+}
+
+#nextButton{
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #535bc5;
+}
+
+#pageLabel{
+    -fx-font-family: Arial, Helvetica, sans-serif;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}

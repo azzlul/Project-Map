@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox fx:id="background" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="69.0" prefWidth="554.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.AddScreenController">
+   <children>
+      <VBox alignment="CENTER" prefHeight="102.0" prefWidth="513.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="91.0" prefWidth="513.0" spacing="10.0">
+               <children>
+                  <Label fx:id="nameLabel" alignment="CENTER" prefHeight="35.0" prefWidth="64.0" text="Name:">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="requestField" onAction="#sendFriendRequest" prefHeight="30.0" prefWidth="410.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="addButton" mnemonicParsing="false" onAction="#sendFriendRequest" prefHeight="25.0" prefWidth="65.0" text="Add" />
+               </children></HBox>
+            <Label fx:id="errorLabel" textFill="RED">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="2.0" />
+               </padding></Label>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets top="15.0" />
+   </padding>
+</HBox>

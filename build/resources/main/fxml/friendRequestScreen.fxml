@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="background" prefHeight="320.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.FriendRequestScreenController">
+   <children>
+      <ListView fx:id="friendRequestList" onMousePressed="#makeAcceptRejectButtonsVisible" prefHeight="320.0" prefWidth="300.0" />
+   </children>
+</AnchorPane>

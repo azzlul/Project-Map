@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox fx:id="background" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="907.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.FriendListController">
+   <children>
+      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="471.0" prefWidth="454.0" spacing="10.0">
+         <children>
+            <Label fx:id="FriendsLabel" prefHeight="27.0" prefWidth="122.0" text="Friends:">
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="23.0" />
+               </font></Label>
+            <ListView fx:id="friendsList" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMousePressed="#makeDeleteButtonVisible" prefHeight="444.0" prefWidth="454.0" />
+            <HBox alignment="CENTER" prefHeight="39.0" prefWidth="454.0" spacing="20.0">
+               <children>
+                  <Button fx:id="previousButton" mnemonicParsing="false" onAction="#goToPreviousPage" text="Prev" />
+                  <Label fx:id="pageLabel" alignment="CENTER" prefHeight="17.0" prefWidth="103.0" text="Page 0 of 5" />
+                  <Button fx:id="nextButton" mnemonicParsing="false" onAction="#goToNextPage" text="Next" />
+               </children>
+            </HBox>
+            <Button fx:id="addFriendButton" mnemonicParsing="false" onAction="#openFriendRequestWindow" prefHeight="51.0" prefWidth="201.0" text="Make Friend Request" wrapText="true">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" />
+               </VBox.margin></Button>
+         </children>
+         <HBox.margin>
+            <Insets top="30.0" />
+         </HBox.margin>
+      </VBox>
+      <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="453.0" spacing="10.0">
+         <padding>
+            <Insets bottom="-2.0" top="-22.0" />
+         </padding>
+         <children>
+            <AnchorPane prefHeight="34.0" prefWidth="453.0">
+               <children>
+                  <Button fx:id="friendRequestButton" layoutX="394.0" layoutY="7.0" mnemonicParsing="false" onAction="#openFriendRequestScreen" prefHeight="34.0" prefWidth="34.0" />
+               </children>
+            </AnchorPane>
+            <Label fx:id="chatLabel" prefHeight="34.0" prefWidth="441.0">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
+            <ScrollPane fx:id="chatBackground" prefHeight="416.0" prefWidth="453.0" vvalue="1.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <content>
+                  <VBox fx:id="chatWindow" spacing="15.0" />
+               </content></ScrollPane>
+            <AnchorPane prefHeight="114.0" prefWidth="453.0">
+               <children>
+                  <TextField fx:id="chatInput" layoutX="16.0" layoutY="65.0" onAction="#createMessage" prefHeight="34.0" prefWidth="370.0" />
+                  <VBox fx:id="replyBackground" layoutX="16.0" layoutY="5.0" prefHeight="51.0" prefWidth="422.0">
+                     <children>
+                        <Label fx:id="replyLabel" alignment="TOP_LEFT" prefHeight="51.0" prefWidth="435.0" visible="false" />
+                     </children>
+                  </VBox>
+                  <Button fx:id="closeReplyButton" layoutX="420.0" layoutY="10.0" maxHeight="5.0" maxWidth="5.0" minHeight="11.0" minWidth="11.0" mnemonicParsing="false" onAction="#closeReplyScreen" prefHeight="5.0" prefWidth="5.0" visible="false" />
+                  <ScrollPane layoutX="19.0" layoutY="101.0" prefHeight="36.0" prefWidth="422.0" vbarPolicy="NEVER">
+                     <content>
+                        <Label fx:id="forwardLabel" textFill="#535bc5" />
+                     </content></ScrollPane>
+                  <Button fx:id="chatButton" layoutX="406.0" layoutY="69.0" mnemonicParsing="false" onAction="#createMessage" prefHeight="25.0" prefWidth="25.0" />
+               </children>
+            </AnchorPane>
+         </children></VBox>
+   </children>
+</HBox>
